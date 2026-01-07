@@ -25,6 +25,20 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
 
-      - name: Run pytest
-        run: pytest tests/
+      - name: Run pytest and generate report
+        run: |
+         pytest tests/\
+            --html=reports/pytest-report.html \
+            --self-contained-html
+      - name: Verify HTML report exists
+        run: |
+          ls -R reports
+          test -f reports/pytest-report.html
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-html-report
+          path: reports/
 
