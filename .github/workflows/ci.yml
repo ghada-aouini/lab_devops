@@ -94,7 +94,7 @@ jobs:
           password: ${{ secrets.GMAIL_PASSWORD }}
 
           from: ${{ secrets.GMAIL_USERNAME }}
-          to: ${{ secrets.MAIL_TO }}
+          to: ${{ secrets.GMAIL_USERNAME }}
           cc: ${{ secrets.MAIL_CC }}
           
 
