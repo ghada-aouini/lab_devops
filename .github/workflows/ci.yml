@@ -69,3 +69,45 @@ jobs:
         run: |
           echo "🚀 Deploying application..."
           # your real deploy command here
+  
+  notify:
+    needs: [test, deploy]
+    if: always()        # ✅ ALWAYS RUN
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download test report artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pytest-html-report
+          path: ./report
+
+      - name: List downloaded files
+        run: ls -R ./report
+
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_PASSWORD }}
+
+          subject: >
+            CI Status: ${{ needs.test.result }} |
+            Repo: ${{ github.repository }}
+
+          body: |
+            CI/CD Pipeline Notification
+
+            Test job status: ${{ needs.test.result }}
+            Deploy job status: ${{ needs.deploy.result }}
+            Repository: ${{ github.repository }}
+            Commit SHA: ${{ github.sha }}
+            Branch: ${{ github.ref_name }}
+
+          to: ${{ secrets.MAIL_TO }}
+          cc: ${{ secrets.MAIL_CC }}
+          from: ${{ secrets.MAIL_FROM }}
+
+          attachments: ./report/pytest-report.html
