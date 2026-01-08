@@ -93,10 +93,11 @@ jobs:
           username: ${{ secrets.GMAIL_USERNAME }}
           password: ${{ secrets.GMAIL_PASSWORD }}
 
+          from: ${{ secrets.GMAIL_USERNAME }}
           to: ${{ secrets.MAIL_TO }}
           cc: ${{ secrets.MAIL_CC }}
-          from: ${{ secrets.MAIL_FROM }}
           
+
           subject: >
             CI Status: ${{ needs.test.result }} |
             Repo: ${{ github.repository }}
